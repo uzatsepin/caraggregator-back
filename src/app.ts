@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 AppDataSource.initialize().then(() => {
   console.log('Data Source has been initialized!');
 
-  app.use('/api', router);
+  app.use('/', router);
 
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`);
