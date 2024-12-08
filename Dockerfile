@@ -1,42 +1,31 @@
 # Stage 1: Build
 FROM node:18-alpine AS builder
 
-# Установить рабочую директорию
 WORKDIR /usr/src/app
 
-# Копировать package.json и package-lock.json (если существует)
 COPY package*.json ./
 
-# Установить зависимости
-RUN npm install
+# Обновленная команда установки
+RUN npm install --legacy-peer-deps
 
-# Копировать исходный код
 COPY . .
 
-# Скомпилировать TypeScript в JavaScript
 RUN npm run build
 
 # Stage 2: Production
 FROM node:18-alpine
 
-# Установить рабочую директорию
 WORKDIR /usr/src/app
 
-# Копировать package.json и package-lock.json
 COPY package*.json ./
 
-# Установить только production зависимости
-RUN npm install --only=production
+# Обновленная команда установки для production
+RUN npm install --omit=dev --legacy-peer-deps
 
-# Копировать скомпилированный код из предыдущего этапа
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-# (Опционально) Копировать файл .env, если используется
-# COPY .env ./
+# Изменяем порт на 3002
+EXPOSE 3002
 
-# Открыть необходимый порт (измените если требуется)
-EXPOSE 3000
-
-# Команда для запуска приложения
 CMD ["node", "dist/app.js"]
