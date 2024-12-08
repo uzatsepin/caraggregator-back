@@ -20,7 +20,7 @@
         "prod:restart": "yarn docker:down && yarn docker:up",
         "prod:logs": "yarn docker:logs",
         "docker:migration:run": "docker-compose exec backend yarn migration:run",
-        "deploy": "git pull && yarn prod:setup && yarn docker:migration:run"
+        "deploy": "git pull && yarn prod:setup"
     },
     "dependencies": {
         "cors": "2.8.5",
