@@ -3,24 +3,24 @@ FROM node:18-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-# Устанавливаем все зависимости, включая devDependencies
-RUN npm ci
+# Install dependencies with yarn
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
 # Stage 2: Production
 FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-# Устанавливаем только production зависимости
-RUN npm ci --only=production
+# Install production dependencies
+RUN yarn install --production --frozen-lockfile
 
 COPY --from=builder /usr/src/app/dist ./dist
 
