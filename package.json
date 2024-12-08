@@ -9,7 +9,21 @@
         "start": "node dist/app.js",
         "typeorm": "typeorm",
         "migration:generate": "typeorm migration:generate -d ./src/data-source.ts",
-        "migration:run": "typeorm migration:run -d ./src/data-source.ts"
+        "migration:run": "typeorm migration:run -d ./src/data-source.ts",
+        
+        "docker:build": "docker-compose build",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:logs": "docker-compose logs -f",
+        
+        "prod:setup": "npm run docker:build && npm run docker:up",
+        "prod:stop": "npm run docker:down",
+        "prod:restart": "npm run docker:down && npm run docker:up",
+        "prod:logs": "npm run docker:logs",
+        
+        "docker:migration:run": "docker-compose exec backend npm run migration:run",
+        
+        "deploy": "git pull && npm run prod:setup && npm run docker:migration:run"
     },
     "keywords": [],
     "author": "",
