@@ -13,6 +13,7 @@ import clientCarRoutes from "./routes/clientCar.routes";
 import carModelPopularityRoutes from "./routes/carModelPopularity.routes";
 import stationPerformanceRoutes from "./routes/stationPerformance.routes";
 import carClientLogsRoutes from "./routes/carClientLogs.routes";
+import stationBrandRevenueRoutes from "./routes/stationBrandRevenue.routes";
 
 const router = Router();
 
@@ -28,8 +29,8 @@ router.use('/top-services', topServicesRoutes);
 router.use('/stats', carBrandServiceStatsRoutes);
 router.use('/client-car', clientCarRoutes);
 router.use('/car-logs', carClientLogsRoutes);
-//
 router.use('/popularity', carModelPopularityRoutes);
 router.use('/performance', stationPerformanceRoutes);
+router.use('/station-revenue', stationBrandRevenueRoutes);
 
 export default router;

@@ -3,22 +3,22 @@ import { ViewEntity, ViewColumn } from 'typeorm';
 @ViewEntity({
     name: "car_brands_service_stats",
     expression: `
-    SELECT 
-        cb.brand_name,
-        cb.brand_logo,
-        COUNT(so.order_id) as total_orders,
-        AVG(so.total_cost) as avg_service_cost
-    FROM service_orders so
-    JOIN car_models cm ON so.car_model_id = cm.model_id
-    JOIN car_brands cb ON cm.brand_id = cb.brand_id
-    GROUP BY cb.brand_id, cb.brand_name
-    ORDER BY total_orders DESC
+        SELECT
+            cb.brand_name,
+            cb.brand_logo,
+            COUNT(DISTINCT so.order_id) AS total_orders,
+            AVG(so.total_cost) AS avg_service_cost
+        FROM car_brands cb
+                 LEFT JOIN car_models cm ON cb.brand_id = cm.brand_id
+                 LEFT JOIN service_orders so ON cm.model_id = so.car_model_id
+        GROUP BY cb.brand_id, cb.brand_name, cb.brand_logo
+        ORDER BY total_orders DESC
     `
 })
 export class CarBrandServiceStats {
     @ViewColumn()
     brand_name!: string;
-    
+
     @ViewColumn()
     brand_logo!: string;
 
