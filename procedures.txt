@@ -1,0 +1,73 @@
+DELIMITER //
+
+CREATE PROCEDURE InsertNewClient(
+    IN fName VARCHAR(100),
+    IN lName VARCHAR(100),
+    IN phoneNumber VARCHAR(20),
+    IN emailAddr VARCHAR(100)
+)
+BEGIN
+    INSERT INTO clients (first_name, last_name, phone, email, registration_date)
+    VALUES (fName, lName, phoneNumber, emailAddr, NOW());
+END //
+
+DELIMITER ;
+
+CALL InsertNewClient('Ім'я', 'Прізвище', '1234567890', 'email@example.com');
+
+DELIMITER //
+
+CREATE PROCEDURE UpdateCarMileage(
+    IN carID INT,
+    IN newMileage VARCHAR(6),
+    IN userName VARCHAR(100)
+)
+BEGIN
+    UPDATE client_car
+    SET mileage = newMileage,
+        updated_at = NOW()
+    WHERE id = carID;
+
+    INSERT INTO client_car_log (car_id, client_id, action, change_date, user)
+    SELECT carID, client_id, CONCAT('Updated mileage to ', newMileage), NOW(), userName
+    FROM client_car
+    WHERE id = carID;
+END //
+
+DELIMITER ;
+
+CALL UpdateCarMileage(1, '15000', 'admin');
+
+
+DELIMITER //
+
+CREATE PROCEDURE CalculateAvgOrderCostForStation(
+    IN stationID INT
+)
+BEGIN
+    SELECT AVG(total_cost) AS avg_order_cost
+    FROM service_orders
+    WHERE station_id = stationID;
+END //
+
+DELIMITER ;
+
+CALL CalculateAvgOrderCostForStation(5);
+
+DELIMITER //
+
+CREATE PROCEDURE ListCarsByBrandWithTotalOrders(
+    IN brandID INT
+)
+BEGIN
+    SELECT cm.model_name, cm.model_year, COUNT(so.order_id) AS total_orders
+    FROM car_models cm
+    LEFT JOIN service_orders so ON cm.model_id = so.car_model_id
+    WHERE cm.brand_id = brandID
+    GROUP BY cm.model_id, cm.model_name, cm.model_year
+    ORDER BY total_orders DESC;
+END //
+
+DELIMITER ;
+
+   CALL ListCarsByBrandWithTotalOrders(1);

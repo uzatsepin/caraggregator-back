@@ -6,7 +6,7 @@ export class ServiceOrderController {
   static async getAll(req: Request, res: Response): Promise<Response> {
     const serviceOrderRepository = AppDataSource.getRepository(ServiceOrders);
     const serviceOrders = await serviceOrderRepository.find({
-      relations: ["client", "station", "carModel"], // Загрузить связанные данные
+      relations: ["client", "station", "station.city", "carModel"],
     });
     return res.json(serviceOrders);
   }
